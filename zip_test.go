@@ -1,4 +1,4 @@
-package zip
+package zzip
 
 import (
 	"os"
@@ -9,15 +9,6 @@ func TestFile(t *testing.T) {
 	src, dest := "./zip.go", "./file.zip"
 	defer os.Remove(dest)
 	err := File(src, dest)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
-func TestFileCarryOriginalHeader(t *testing.T) {
-	src, dest := "./zip.go", "./fileCarryOriginalHeader.zip"
-	defer os.Remove(dest)
-	err := FileCarryOriginalHeader(src, dest)
 	if err != nil {
 		t.Error(err)
 	}
@@ -38,26 +29,11 @@ func TestDir(t *testing.T) {
 	}
 }
 
-func TestDirCarryOriginalHeader(t *testing.T) {
-	src, dest, destIncludeSrc := "./test", "./dirCarryOriginalHeader.zip", "./dirIncludeSrcCarryOriginalHeader.zip"
-	// src, _ = filepath.Abs(src)
-	defer os.Remove(dest)
-	defer os.Remove(destIncludeSrc)
-	err := DirCarryOriginalHeader(src, dest, false)
-	if err != nil {
-		t.Error(err)
-	}
-	err = DirCarryOriginalHeader(src, destIncludeSrc, true)
-	if err != nil {
-		t.Error(err)
-	}
-}
-
 func TestUnzip(t *testing.T) {
 	src, zipFile, unzipDir := "./test", "./toUzip.zip", "./unzip"
 	defer os.Remove(zipFile)
 	defer os.RemoveAll(unzipDir)
-	err := DirCarryOriginalHeader(src, zipFile, true)
+	err := Dir(src, zipFile, true)
 	if err != nil {
 		t.Error(err)
 	}

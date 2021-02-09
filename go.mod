@@ -1,3 +1,3 @@
-module zip
+module zzip
 
 go 1.15

@@ -1,4 +1,4 @@
-package zip
+package zzip
 
 import (
 	"archive/zip"
@@ -9,31 +9,6 @@ import (
 
 // File Compress a file into a zip file
 func File(src string, dest string) error {
-	zipfile, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-	defer zipfile.Close()
-
-	archive := zip.NewWriter(zipfile)
-	defer archive.Close()
-
-	file, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-
-	w, err := archive.Create(filepath.Base(src))
-	if err != nil {
-		return err
-	}
-
-	_, err = io.Copy(w, file)
-	return err
-}
-
-// FileCarryOriginalHeader Compress a file into a zip file, carrying original header
-func FileCarryOriginalHeader(src string, dest string) error {
 	zipfile, err := os.Create(dest)
 	if err != nil {
 		return err
@@ -66,9 +41,9 @@ func FileCarryOriginalHeader(src string, dest string) error {
 	return err
 }
 
-// Dir Compress a directory into a zip file
-func Dir(srcFile string, destZip string, includeSrc bool) error {
-	zipfile, err := os.Create(destZip)
+// Another implementation for File
+func file(src string, dest string) error {
+	zipfile, err := os.Create(dest)
 	if err != nil {
 		return err
 	}
@@ -77,52 +52,22 @@ func Dir(srcFile string, destZip string, includeSrc bool) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		var name string
-		if includeSrc {
-			name, err = filepath.Rel(filepath.Dir(srcFile), path)
-			if err != nil {
-				return err
-			}
-		} else {
-			if path == srcFile {
-				return nil
-			}
-			name, err = filepath.Rel(srcFile, path)
-			if err != nil {
-				return err
-			}
-		}
-
-		name = filepath.ToSlash(name)
-		if info.IsDir() {
-			name += "/"
-		}
-
-		writer, err := archive.Create(name)
-		if err != nil {
-			return err
-		}
-
-		if !info.IsDir() {
-			file, err := os.Open(path)
-			if err != nil {
-				return err
-			}
-			defer file.Close()
-			_, err = io.Copy(writer, file)
-		}
+	file, err := os.Open(src)
+	if err != nil {
 		return err
-	})
+	}
 
+	w, err := archive.Create(filepath.Base(src))
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(w, file)
 	return err
 }
 
-// DirCarryOriginalHeader Compress a directory into a zip file, carrying original header
-func DirCarryOriginalHeader(srcFile string, destZip string, includeSrc bool) error {
+// Dir Compress a directory into a zip file
+func Dir(srcFile string, destZip string, includeSrc bool) error {
 	zipfile, err := os.Create(destZip)
 	if err != nil {
 		return err
@@ -167,6 +112,61 @@ func DirCarryOriginalHeader(srcFile string, destZip string, includeSrc bool) err
 		}
 
 		writer, err := archive.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			_, err = io.Copy(writer, file)
+		}
+		return err
+	})
+
+	return err
+}
+
+// Another implementation for dir
+func dir(srcFile string, destZip string, includeSrc bool) error {
+	zipfile, err := os.Create(destZip)
+	if err != nil {
+		return err
+	}
+	defer zipfile.Close()
+
+	archive := zip.NewWriter(zipfile)
+	defer archive.Close()
+
+	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		var name string
+		if includeSrc {
+			name, err = filepath.Rel(filepath.Dir(srcFile), path)
+			if err != nil {
+				return err
+			}
+		} else {
+			if path == srcFile {
+				return nil
+			}
+			name, err = filepath.Rel(srcFile, path)
+			if err != nil {
+				return err
+			}
+		}
+
+		name = filepath.ToSlash(name)
+		if info.IsDir() {
+			name += "/"
+		}
+
+		writer, err := archive.Create(name)
 		if err != nil {
 			return err
 		}
