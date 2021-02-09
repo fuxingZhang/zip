@@ -19,11 +19,11 @@ import (
 
 func main() {
 	src, zipFile, unzipDir := "./test", "./from_test.zip", "./unzip"
-	err := Dir(src, zipFile, true)
+	err := zip.Dir(src, zipFile, true)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = Unzip(zipFile, unzipDir)
+	err = zip.Unzip(zipFile, unzipDir)
 	if err != nil {
 		fmt.Println(err)
 	}

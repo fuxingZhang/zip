@@ -1,4 +1,4 @@
-package zzip
+package github.com/fuxingZhang/zip
 
 import (
 	"os"
