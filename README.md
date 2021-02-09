@@ -13,7 +13,7 @@ func Unzip(zipFile string, destDir string) error
 package main
 
 import (
-	"https://github.com/fuxingZhang/zip"
+	"github.com/fuxingZhang/zip"
 	"fmt"
 )
 
