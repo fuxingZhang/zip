@@ -1,4 +1,4 @@
-package github.com/fuxingZhang/zip
+package zip
 
 import (
 	"archive/zip"
