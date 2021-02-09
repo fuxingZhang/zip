@@ -3,12 +3,16 @@ golang zip directory and unzip file
 
 ### Index
 ```go
-func File(src string, dest string) error
-func Dir(srcFile string, destZip string, includeSrc bool) error
+func File(src string, dst string) error 
+func Dir(src string, dst string, includeSrc bool) error
 func Unzip(zipFile string, destDir string) error
 ```  
 
 ### Usage
+```bash
+go get -u github.com/fuxingZhang/zip
+```
+
 ```go
 package main
 

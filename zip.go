@@ -8,8 +8,8 @@ import (
 )
 
 // File Compress a file into a zip file
-func File(src string, dest string) error {
-	zipfile, err := os.Create(dest)
+func File(src string, dst string) error {
+	zipfile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
@@ -42,8 +42,8 @@ func File(src string, dest string) error {
 }
 
 // Another implementation for File
-func file(src string, dest string) error {
-	zipfile, err := os.Create(dest)
+func file(src string, dst string) error {
+	zipfile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ func file(src string, dest string) error {
 }
 
 // Dir Compress a directory into a zip file
-func Dir(srcFile string, destZip string, includeSrc bool) error {
-	zipfile, err := os.Create(destZip)
+func Dir(src string, dst string, includeSrc bool) error {
+	zipfile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
@@ -77,7 +77,7 @@ func Dir(srcFile string, destZip string, includeSrc bool) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
+	filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -89,15 +89,15 @@ func Dir(srcFile string, destZip string, includeSrc bool) error {
 		}
 
 		if includeSrc {
-			name, err = filepath.Rel(filepath.Dir(srcFile), path)
+			name, err = filepath.Rel(filepath.Dir(src), path)
 			if err != nil {
 				return err
 			}
 		} else {
-			if path == srcFile {
+			if path == src {
 				return nil
 			}
-			name, err = filepath.Rel(srcFile, path)
+			name, err = filepath.Rel(src, path)
 			if err != nil {
 				return err
 			}
@@ -131,8 +131,8 @@ func Dir(srcFile string, destZip string, includeSrc bool) error {
 }
 
 // Another implementation for dir
-func dir(srcFile string, destZip string, includeSrc bool) error {
-	zipfile, err := os.Create(destZip)
+func dir(src string, dst string, includeSrc bool) error {
+	zipfile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
@@ -141,21 +141,21 @@ func dir(srcFile string, destZip string, includeSrc bool) error {
 	archive := zip.NewWriter(zipfile)
 	defer archive.Close()
 
-	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
+	filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		var name string
 		if includeSrc {
-			name, err = filepath.Rel(filepath.Dir(srcFile), path)
+			name, err = filepath.Rel(filepath.Dir(src), path)
 			if err != nil {
 				return err
 			}
 		} else {
-			if path == srcFile {
+			if path == src {
 				return nil
 			}
-			name, err = filepath.Rel(srcFile, path)
+			name, err = filepath.Rel(src, path)
 			if err != nil {
 				return err
 			}
@@ -186,7 +186,7 @@ func dir(srcFile string, destZip string, includeSrc bool) error {
 }
 
 // Unzip Unzip zip file
-func Unzip(zipFile string, destDir string) error {
+func Unzip(zipFile string, dstDir string) error {
 	zipReader, err := zip.OpenReader(zipFile)
 	if err != nil {
 		return err
@@ -194,7 +194,7 @@ func Unzip(zipFile string, destDir string) error {
 	defer zipReader.Close()
 
 	for _, f := range zipReader.File {
-		fpath := filepath.Join(destDir, f.Name)
+		fpath := filepath.Join(dstDir, f.Name)
 		if f.FileInfo().IsDir() {
 			os.MkdirAll(fpath, os.ModePerm)
 		} else {
